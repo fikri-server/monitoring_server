@@ -1,33 +1,27 @@
 name: Deploy Monitoring Server
 
-# Workflow ini akan jalan otomatis setiap kamu push ke branch main
 on:
   push:
     branches: [ main ]
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    # GANTI INI: Dari 'ubuntu-latest' jadi 'self-hosted'
+    runs-on: self-hosted 
+    
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Deploy to Server via SSH
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 22
-          script: |
-            # 1. Masuk ke direktori project di server
-            cd ~/project/monitoring_server
-            
-            # 2. Ambil perubahan kode terbaru dari GitHub
-            git pull origin main
-            
-            # 3. Compile ulang aplikasi Go (Gunakan path lengkap agar aman)
-            /usr/local/go/bin/go build -o monitoring_app .
-            
-            # 4. Restart service systemd agar binary baru dijalankan
-            sudo systemctl restart monitoring_server
+      # Kita tidak butuh 'appleboy/ssh-action' lagi karena
+      # perintah di bawah ini akan dijalankan LANGSUNG di terminal Lenovo kamu.
+      - name: Update and Rebuild on Lenovo Server
+        run: |
+          # 1. Masuk ke direktori project di server
+          cd ~/project/monitoring_server
+          
+          # 2. Ambil perubahan kode terbaru dari GitHub
+          git pull origin main
+          
+          # 3. Compile ulang aplikasi Go
+          /usr/local/go/bin/go build -o monitoring_app .
+          
+          # 4. Restart service systemd
+          sudo systemctl restart monitoring_server
