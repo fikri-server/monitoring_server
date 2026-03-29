@@ -153,7 +153,7 @@
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(6, 1fr);
             gap: 16px;
             margin-bottom: 16px;
             animation: fadeUp 0.6s 0.15s ease both;
@@ -161,10 +161,14 @@
 
         @media (max-width: 1000px) {
             .grid { grid-template-columns: repeat(2, 1fr); }
+            .card-cpu, .card-mem, .card-disk { grid-column: span 1; }
+            .card-batt, .card-temp { grid-column: span 1; }
         }
 
         @media (max-width: 560px) {
             .grid { grid-template-columns: 1fr; }
+                .card-cpu, .card-mem, .card-disk, .card-batt, .card-temp { grid-column: span 1; }
+                
         }
 
         /* ── CARD ── */
@@ -192,14 +196,20 @@
             box-shadow: 0 0 20px var(--card-accent, var(--accent));
         }
 
-        .card-cpu  { --card-accent: var(--cpu-color); }
-        .card-mem  { --card-accent: var(--mem-color); }
-        .card-disk { --card-accent: var(--disk-color); }
-        .card-batt { --batt-color: #a29bfe; --card-accent: #a29bfe; }
-        .card-temp { --card-accent: var(--temp-color); }
-        .card-net  { --card-accent: #f368e0; }
-        .card-load { --card-accent: #ffd32a; }
-
+        .card-cpu  { --card-accent: var(--cpu-color);
+         grid-column: span 2; }
+        .card-mem  { --card-accent: var(--mem-color); 
+        grid-column: span 2; }
+        .card-disk { --card-accent: var(--disk-color); 
+        grid-column: span 2; }
+        .card-batt { --batt-color: #a29bfe; --card-accent: #a29bfe; 
+        grid-column: span 3; }
+        .card-temp { --card-accent: var(--temp-color); 
+        grid-column: span 3; }
+        .card-net  { --card-accent: #f368e0; 
+        }
+        .card-load { --card-accent: #ffd32a; 
+        }
 
         .card-head-left {
             display: flex;
