@@ -116,6 +116,11 @@ func updateAllData(
 }
 
 func homePage(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/" {
+		http.NotFound(w, r)
+		return
+	}
+
 	tmpl, err := template.ParseFiles("templates/index.html")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -123,7 +128,6 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 	}
 	tmpl.Execute(w, systemInfo)
 }
-
 func apiMonitor(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
