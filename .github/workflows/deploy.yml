@@ -15,7 +15,7 @@ jobs:
           cd /home/fikri/project/monitoring_server
           git pull origin main
           # Pakai path Go yang sudah terinstall di server (cek pakai 'which go')
-          go build -o monitoring_app .
+          go build -o monitoring_server .
       - name: Restart Service
         run: |
           sudo /usr/local/bin/restart-app monitoring_server

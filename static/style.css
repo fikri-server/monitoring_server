@@ -195,9 +195,55 @@
         .card-cpu  { --card-accent: var(--cpu-color); }
         .card-mem  { --card-accent: var(--mem-color); }
         .card-disk { --card-accent: var(--disk-color); }
+        .card-batt { --batt-color: #a29bfe; --card-accent: #a29bfe; }
         .card-temp { --card-accent: var(--temp-color); }
         .card-net  { --card-accent: #f368e0; }
         .card-load { --card-accent: #ffd32a; }
+
+
+        .card-head-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .batt-icon-svg { display: block; flex-shrink: 0; }
+
+        .batt-val { color: var(--batt-color); }
+
+        .batt-bar-fill {
+            background: var(--batt-color) !important;
+            box-shadow: 0 0 8px var(--batt-color) !important;
+        }
+
+        .batt-status-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 4px;
+        }
+
+        .batt-status-badge {
+            font-size: 9px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+            background: rgba(162,155,254,0.12);
+            color: var(--batt-color);
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .batt-status-badge.charging  { background: rgba(0,255,157,0.12); color: var(--accent3); }
+        .batt-status-badge.discharging { background: rgba(255,107,53,0.12); color: var(--warn); }
+        .batt-status-badge.full      { background: rgba(0,255,157,0.12); color: var(--accent3); }
+
+        .batt-health-val {
+            font-size: 11px;
+            color: var(--text-dim);
+            font-weight: 700;
+        }
 
         /* Thermometer widget */
         .thermo-wrap {

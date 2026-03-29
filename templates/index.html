@@ -115,6 +115,51 @@
                 </div>
             </div>
         </div>
+        <!-- BATTERY -->
+        <div class="card card-batt" data-index="05">
+            <div class="card-head">
+                <div class="card-head-left">
+                    <div class="card-icon">🔋</div>
+                    <span class="card-title">Battery</span>
+                </div>
+                <svg class="batt-icon-svg" width="32" height="16" viewBox="0 0 32 16">
+                    <rect x="0" y="1" width="28" height="14" rx="3" fill="none" stroke="var(--text-muted)" stroke-width="1.5"/>
+                    <rect x="28" y="5" width="3" height="6" rx="1.5" fill="var(--text-muted)"/>
+                    <rect id="batt-icon-fill" x="2" y="3" width="14" height="10" rx="2" fill="var(--batt-color)"/>
+                </svg>
+            </div>
+
+            <div class="big-value batt-val" id="batt-percent">0<span style="font-size:0.45em;opacity:0.6">%</span></div>
+
+            <div class="batt-status-row">
+                <span class="batt-status-badge" id="batt-status-badge">IDLE</span>
+                <span class="metric-label" style="margin:0">Health:&nbsp;</span>
+                <span class="batt-health-val" id="batt-health">—</span>
+            </div>
+
+            <div class="bar-wrap">
+                <div class="bar-fill batt-bar-fill" id="batt-fill" style="width:0%"></div>
+            </div>
+
+            <div class="metrics">
+                <div class="metric-item">
+                    <div class="metric-label">Energy Now</div>
+                    <div class="metric-value" id="batt-energy-now">—</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">Full Cap.</div>
+                    <div class="metric-value" id="batt-energy-full">—</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">Voltage</div>
+                    <div class="metric-value" id="batt-voltage">—</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">Design Cap.</div>
+                    <div class="metric-value" id="batt-design">—</div>
+                </div>
+            </div>
+        </div>
 
         <!-- TEMPERATURE -->
         <div class="card card-temp" data-index="04">

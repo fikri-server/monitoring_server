@@ -67,6 +67,32 @@ document.addEventListener('DOMContentLoaded', () => {
         if (bulbEl)  bulbEl.style.fill = color;
     }
 
+    function setBattBarColor(id, pct) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (pct > 80)       el.style.background = '#1D9E75'; // hijau
+    else if (pct > 30)  el.style.background = '#EF9F27'; // kuning
+    else                el.style.background = '#E24B4A'; // merah
+}
+
+    function setBattStatusColor(id, status) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (status === 'Charging') {
+            el.style.background = 'var(--color-background-success)';
+            el.style.color = 'var(--color-text-success)';
+        } else if (status === 'Discharging') {
+            el.style.background = 'var(--color-background-warning)';
+            el.style.color = 'var(--color-text-warning)';
+        } else if (status === 'Full') {
+            el.style.background = 'var(--color-background-success)';
+            el.style.color = 'var(--color-text-success)';
+        } else {
+            el.style.background = 'var(--color-background-secondary)';
+            el.style.color = 'var(--color-text-secondary)';
+        }
+    }
+
     async function fetchMonitorData() {
         try {
             const response = await fetch('/api/monitor'); // Pastikan API ini memang ada di servermu
@@ -114,6 +140,29 @@ document.addEventListener('DOMContentLoaded', () => {
                 setText('net-sent', fmt(data.network.bytes_sent));
                 setText('net-recv', fmt(data.network.bytes_recv));
                 setText('net-conn', data.network.connections ?? '—');
+            }
+            // Tambahkan setelah blok network
+            if (data.battery) {
+                const battPct = parseFloat(data.battery.percentage).toFixed(1);
+                const battStatus = data.battery.status || 'Unknown';
+
+                setBigVal('batt-percent', battPct);
+                setWidth('batt-fill', battPct);
+                setBattBarColor('batt-fill', battPct);
+                setText('batt-status-badge', battStatus);
+                setBattStatusColor('batt-status-badge', battStatus);
+                setText('batt-energy-now', (data.battery.energy_now || 0).toLocaleString() + ' mWh');
+                setText('batt-energy-full', (data.battery.energy_full || 0).toLocaleString() + ' mWh');
+                setText('batt-health', parseFloat(data.battery.health || 0).toFixed(1) + '%');
+                setText('batt-voltage', (data.battery.voltage || 0).toLocaleString() + ' mV');
+                setText('batt-design', (data.battery.energy_design || 0).toLocaleString() + ' mWh');
+                setText('batt-status-text', battStatus);
+
+                // Update icon fill
+                const iconFill = document.getElementById('batt-icon-fill');
+                if (iconFill) {
+                    iconFill.style.width = Math.min(100, battPct) + '%';
+                }
             }
 
             setText('info-hostname', data.hostname || '—');
