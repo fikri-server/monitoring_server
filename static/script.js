@@ -68,12 +68,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function setBattBarColor(id, pct) {
-    const el = document.getElementById(id);
-    if (!el) return;
-    if (pct > 80)       el.style.background = '#1D9E75'; // hijau
-    else if (pct > 30)  el.style.background = '#EF9F27'; // kuning
-    else                el.style.background = '#E24B4A'; // merah
-}
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (pct > 80)       el.style.background = '#1D9E75';
+        else if (pct > 30)  el.style.background = '#EF9F27';
+        else                el.style.background = '#E24B4A';
+    }
 
     function setBattStatusColor(id, status) {
         const el = document.getElementById(id);
@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function fetchMonitorData() {
         try {
-            const response = await fetch('/api/monitor'); // Pastikan API ini memang ada di servermu
+            const response = await fetch('/api/monitor');
             const data = await response.json();
 
             const cpuPct  = parseFloat(data.cpu.percent).toFixed(1);
@@ -147,29 +147,56 @@ document.addEventListener('DOMContentLoaded', () => {
                 const pctStr = pct.toFixed(1);
 
                 setBigVal('batt-percent', pctStr);
-
-                // bar width
                 const barEl = document.getElementById('batt-fill');
                 if (barEl) barEl.style.width = Math.min(100, pct) + '%';
-
-                // icon fill width (max 24px = full, mapped from 2px to 26px range)
                 const iconFill = document.getElementById('batt-icon-fill');
                 if (iconFill) iconFill.setAttribute('width', (pct / 100 * 24).toFixed(1));
-
-                // status badge
                 const badge = document.getElementById('batt-status-badge');
                 if (badge) {
                     const s = (b.status || 'idle').toLowerCase();
                     badge.textContent = (b.status || 'Idle').toUpperCase();
                     badge.className = 'batt-status-badge ' + s;
                 }
-
                 setText('batt-health', parseFloat(b.health || 0).toFixed(1) + '%');
                 setText('batt-energy-now', (b.energy_now || 0).toLocaleString() + ' mWh');
                 setText('batt-energy-full', (b.energy_full || 0).toLocaleString() + ' mWh');
                 setText('batt-voltage', (b.voltage || 0).toLocaleString() + ' mV');
                 setText('batt-design', (b.energy_design || 0).toLocaleString() + ' mWh');
             }
+
+            // ========== TAMBAHAN GPU ==========
+            if (data.gpu) {
+                const gpuBusy = parseFloat(data.gpu.busy_percent) || 0;
+                const vramUsed = data.gpu.vram_used || 0;
+                const vramTotal = data.gpu.vram_total || 1;
+                const vramPercent = (vramUsed / vramTotal) * 100;
+                const gpuTemp = data.gpu.temp_celsius || 0;
+
+                // Persentase penggunaan GPU
+                setBigVal('gpu-percent', gpuBusy);
+                setWidth('gpu-fill', gpuBusy);
+                setBarColor('gpu-fill', gpuBusy);
+
+                // VRAM
+                setText('gpu-vram-used', fmt(vramUsed));
+                setText('gpu-vram-total', fmt(vramTotal));
+                setText('gpu-vram-percent', vramPercent.toFixed(1) + '%');
+                if (document.getElementById('gpu-vram-fill')) {
+                    setWidth('gpu-vram-fill', vramPercent);
+                }
+
+                // Suhu GPU (opsional, bisa pakai fungsi terpisah)
+                if (document.getElementById('gpu-temp')) {
+                    setText('gpu-temp', gpuTemp.toFixed(1) + '°C');
+                    // Tambahkan perubahan warna sesuai suhu jika diinginkan
+                    const gpuTempEl = document.getElementById('gpu-temp');
+                    if (gpuTemp < 50) gpuTempEl.style.color = '#00ff9d';
+                    else if (gpuTemp < 70) gpuTempEl.style.color = '#ff9f43';
+                    else if (gpuTemp < 85) gpuTempEl.style.color = '#ff6b35';
+                    else gpuTempEl.style.color = '#ff3838';
+                }
+            }
+            // =================================
 
             setText('info-hostname', data.hostname || '—');
             setText('info-os', data.os || '—');
@@ -191,8 +218,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Jalankan pertama kali
     fetchMonitorData();
-    // Ulangi setiap 2 detik
     setInterval(fetchMonitorData, 2000);
 });

@@ -13,7 +13,6 @@
 <body>
 <div class="container">
 
-    <!-- HEADER -->
     <div class="header">
         <div class="header-left">
             <div class="logo-row">
@@ -31,10 +30,8 @@
         </div>
     </div>
 
-    <!-- CARDS -->
     <div class="grid">
 
-        <!-- CPU -->
         <div class="card card-cpu" data-index="01">
             <div class="card-head">
                 <div class="card-icon">🖥</div>
@@ -60,7 +57,6 @@
             </div>
         </div>
 
-        <!-- MEMORY -->
         <div class="card card-mem" data-index="02">
             <div class="card-head">
                 <div class="card-icon">🧠</div>
@@ -90,7 +86,6 @@
             </div>
         </div>
 
-        <!-- DISK -->
         <div class="card card-disk" data-index="03">
             <div class="card-head">
                 <div class="card-icon">💾</div>
@@ -115,7 +110,36 @@
                 </div>
             </div>
         </div>
-        <!-- BATTERY -->
+
+        <div class="card card-gpu" data-index="06">
+            <div class="card-head">
+                <div class="card-icon">🎮</div>
+                <span class="card-title">GPU</span>
+            </div>
+            <div class="big-value" id="gpu-percent">0<span style="font-size:0.45em;opacity:0.6">%</span></div>
+            <div class="bar-wrap">
+                <div class="bar-fill" id="gpu-fill" style="width:0%"></div>
+            </div>
+            <div class="metrics">
+                <div class="metric-item">
+                    <div class="metric-label">VRAM Used</div>
+                    <div class="metric-value" id="gpu-vram-used">—</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">VRAM Total</div>
+                    <div class="metric-value" id="gpu-vram-total">—</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">VRAM %</div>
+                    <div class="metric-value" id="gpu-vram-percent">—</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">Temp</div>
+                    <div class="metric-value" id="gpu-temp">—</div>
+                </div>
+            </div>
+        </div>
+
         <div class="card card-batt" data-index="05">
             <div class="card-head">
                 <div class="card-head-left">
@@ -161,7 +185,6 @@
             </div>
         </div>
 
-        <!-- TEMPERATURE -->
         <div class="card card-temp" data-index="04">
             <div class="card-head">
                 <div class="card-icon">🌡</div>
@@ -169,20 +192,14 @@
             </div>
 
             <div class="thermo-wrap">
-                <!-- SVG Thermometer -->
                 <svg class="thermo-svg" width="28" height="90" viewBox="0 0 28 90">
-                    <!-- tube background -->
                     <rect class="thermo-tube-bg" x="9" y="4" width="10" height="62" rx="5"/>
-                    <!-- tube fill -->
                     <rect class="thermo-tube-fill" id="thermo-fill" x="11" y="44" width="6" height="22" rx="3"/>
-                    <!-- outline -->
                     <rect class="thermo-outline" x="9" y="4" width="10" height="62" rx="5"/>
-                    <!-- tick marks -->
                     <line x1="19" y1="16" x2="23" y2="16" stroke="var(--text-muted)" stroke-width="1"/>
                     <line x1="19" y1="28" x2="23" y2="28" stroke="var(--text-muted)" stroke-width="1"/>
                     <line x1="19" y1="40" x2="23" y2="40" stroke="var(--text-muted)" stroke-width="1"/>
                     <line x1="19" y1="52" x2="23" y2="52" stroke="var(--text-muted)" stroke-width="1"/>
-                    <!-- bulb -->
                     <circle class="thermo-bulb" id="thermo-bulb" cx="14" cy="76" r="10"/>
                     <circle cx="14" cy="76" r="10" fill="none" stroke="var(--border)" stroke-width="1.5"/>
                 </svg>
@@ -215,7 +232,6 @@
 
     </div>
 
-    <!-- BOTTOM ROW -->
     <div class="bottom-row">
 
         <div class="info-card">
