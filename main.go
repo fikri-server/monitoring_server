@@ -87,6 +87,7 @@ func updateAllData(
 	cpuService *cpu.Service,
 	memService *memory.Service,
 	diskService *disk.Service,
+	gpuService *gpu.Service,
 	netService *network.Service,
 	sysService *sysinfo.Service,
 	batteryService *battery.Service,
@@ -95,6 +96,7 @@ func updateAllData(
 		cpuInfo, _ := cpuService.GetCPUInfo()
 		memInfo, _ := memService.GetMemInfo()
 		diskInfo, _ := diskService.GetDiskInfo()
+		gpuInfo, _ := gpuService.GetGPUInfo()
 		netInfo, _ := netService.GetNetInfo()
 		sysInfo, _ := sysService.GetSystemInfo()
 		batteryInfo, _ := batteryService.GetBatteryInfo() // bisa error, tapi akan tetap zero value
@@ -108,6 +110,7 @@ func updateAllData(
 			CPU:         cpuInfo,
 			Memory:      memInfo,
 			Disk:        diskInfo,
+			GPU:         gpuInfo,
 			Network:     netInfo,
 			Temperature: sysInfo.Temperature,
 			LoadAvg:     sysInfo.LoadAvg,
