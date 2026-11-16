@@ -218,6 +218,72 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    async function fetchNotifyStatus() {
+        try {
+            const response = await fetch('/api/notify');
+            const st = await response.json();
+
+            const stateEl = document.getElementById('notify-state');
+            const ruleEl  = document.getElementById('notify-rule');
+            const lastEl  = document.getElementById('notify-last');
+            const armedEl = document.getElementById('notify-armed');
+
+            if (stateEl) {
+                stateEl.textContent = st.configured ? 'ACTIVE' : 'NOT CONFIGURED';
+                stateEl.style.color = st.configured ? 'var(--accent3)' : 'var(--warn)';
+            }
+            if (ruleEl) ruleEl.textContent = `< ${st.threshold}% saat discharging`;
+            if (lastEl) {
+                lastEl.textContent = st.last_sent
+                    ? new Date(st.last_sent).toLocaleString('id-ID')
+                    : 'belum pernah';
+            }
+            if (armedEl) {
+                if (!st.configured) {
+                    armedEl.textContent = 'off';
+                    armedEl.style.color = 'var(--text-muted)';
+                } else if (st.last_error) {
+                    armedEl.textContent = 'error: ' + st.last_error;
+                    armedEl.style.color = 'var(--warn)';
+                } else {
+                    armedEl.textContent = st.armed ? 'siap' : 'menunggu';
+                    armedEl.style.color = st.armed ? 'var(--accent3)' : 'var(--text-dim)';
+                }
+            }
+        } catch (err) {
+            console.error('Notify status error:', err);
+        }
+    }
+
+    const notifyBtn = document.getElementById('notify-test');
+    if (notifyBtn) {
+        notifyBtn.addEventListener('click', async () => {
+            const resultEl = document.getElementById('notify-result');
+            notifyBtn.disabled = true;
+            if (resultEl) {
+                resultEl.textContent = 'mengirim...';
+                resultEl.style.color = 'var(--text-dim)';
+            }
+            try {
+                const response = await fetch('/api/notify/test', { method: 'POST' });
+                const data = await response.json();
+                if (resultEl) {
+                    resultEl.textContent = response.ok ? 'terkirim' : (data.error || 'gagal');
+                    resultEl.style.color = response.ok ? 'var(--accent3)' : 'var(--warn)';
+                }
+            } catch (err) {
+                if (resultEl) {
+                    resultEl.textContent = 'gagal menghubungi server';
+                    resultEl.style.color = 'var(--warn)';
+                }
+            } finally {
+                notifyBtn.disabled = false;
+            }
+        });
+    }
+
     fetchMonitorData();
     setInterval(fetchMonitorData, 2000);
+    fetchNotifyStatus();
+    setInterval(fetchNotifyStatus, 2000);
 });
