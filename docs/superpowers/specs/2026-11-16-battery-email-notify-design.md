@@ -17,7 +17,6 @@ Email dikirim dari dan ke Gmail pemilik sendiri (SMTP Gmail + App Password).
   dan persentase < threshold.
 - Konfigurasi sepenuhnya dari `.env`/environment server.
 - Dashboard menampilkan status notifikasi tanpa membocorkan alamat email atau kredensial.
-- Tombol "Kirim test email" untuk memverifikasi kredensial kapan saja.
 
 ## Non-goals
 
@@ -83,7 +82,6 @@ tidak ada percobaan koneksi SMTP.
   - saat gagal: simpan `lastErr`, ulangi setelah cooldown 1 menit selama kondisi berlaku;
   - jika status bukan `Discharging` atau `Percentage >= threshold` → `notified = false`
     (episode baru akan mengirim email lagi).
-- `SendTest()` mengirim email percobaan; error dikembalikan ke caller.
 - Pengiriman: `smtp.SendMail("smtp.gmail.com:587", auth, from, []string{to}, msg)`
   dengan STARTTLS dan `smtp.PlainAuth`. Isi email: hostname, persen baterai,
   status, waktu server.
@@ -103,9 +101,7 @@ tidak ada percobaan koneksi SMTP.
   }
   ```
   Tidak memuat `SMTP_USER`, `SMTP_PASS`, maupun `NOTIFY_TO`.
-- `POST /api/notify/test` → kirim email test; balas 200 atau 500 dengan pesan error
-  yang sudah disanitasi.
-- Tidak ada endpoint untuk mengubah konfigurasi.
+- Tidak ada endpoint POST maupun untuk mengubah konfigurasi.
 
 ### Dashboard
 
@@ -116,14 +112,12 @@ Card "Email Alerts" di `bottom-row` `templates/index.html`, mengikuti gaya card 
 │ ACTIVE · < 20% saat discharging    │
 │ Terakhir : 16 Nov 14:32             │
 │ Status   : ● siap                   │
-│ [ Kirim test email ]                │
 └────────────────────────────────────┘
 ```
 
 - `static/script.js` mengambil `/api/notify` tiap 2 detik bersama `/api/monitor`
   (fetch terpisah), menampilkan badge ACTIVE / NOT CONFIGURED, threshold, waktu
   terakhir kirim, status siap/menunggu/error.
-- Tombol test memanggil `POST /api/notify/test` dan menampilkan hasil singkat.
 - Tidak ada alamat email di DOM.
 
 ### Wiring `main.go`

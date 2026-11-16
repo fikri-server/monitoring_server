@@ -80,7 +80,6 @@ func main() {
 	http.HandleFunc("/api/battery/status", batteryHandler.GetBatteryStatusHandler)
 	http.HandleFunc("/api/battery/health", batteryHandler.GetBatteryHealthHandler)
 	http.HandleFunc("/api/notify", notifyHandler.GetStatus)
-	http.HandleFunc("/api/notify/test", notifyHandler.SendTest)
 	http.HandleFunc("/health", healthCheck)
 
 	// Static files

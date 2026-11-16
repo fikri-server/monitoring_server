@@ -31,22 +31,6 @@ func TestGetStatusHidesCredentials(t *testing.T) {
 	}
 }
 
-func TestSendTestHandler(t *testing.T) {
-	calls := 0
-	h := NewHandler(NewService(testConfig(), countingSender(&calls, nil)))
-	rec := httptest.NewRecorder()
-	h.SendTest(rec, httptest.NewRequest(http.MethodPost, "/api/notify/test", nil))
-	if rec.Code != http.StatusOK || calls != 1 {
-		t.Fatalf("status %d calls %d", rec.Code, calls)
-	}
-
-	rec = httptest.NewRecorder()
-	h.SendTest(rec, httptest.NewRequest(http.MethodGet, "/api/notify/test", nil))
-	if rec.Code != http.StatusMethodNotAllowed {
-		t.Fatalf("expected 405, got %d", rec.Code)
-	}
-}
-
 func TestGetStatusRejectsPost(t *testing.T) {
 	h := NewHandler(NewService(testConfig(), countingSender(new(int), nil)))
 	rec := httptest.NewRecorder()

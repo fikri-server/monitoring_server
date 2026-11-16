@@ -1,7 +1,6 @@
 package notify
 
 import (
-	"errors"
 	"os"
 	"strings"
 	"sync"
@@ -70,22 +69,6 @@ func (s *Service) Check(info battery.BatteryInfo, now time.Time) {
 	s.notified = true
 	s.lastSent = now
 	s.lastErr = ""
-}
-
-func (s *Service) SendTest() error {
-	s.mu.Lock()
-	if !s.cfg.Configured() {
-		s.mu.Unlock()
-		return errors.New("email notification not configured")
-	}
-	cfg, send, hostname := s.cfg, s.send, s.hostname
-	s.mu.Unlock()
-
-	msg := buildTestMessage(cfg.User, cfg.Recipient, hostname, time.Now())
-	if err := send(cfg.User, cfg.Password, cfg.Recipient, msg); err != nil {
-		return errors.New(sanitize(err.Error(), cfg.User, cfg.Password, cfg.Recipient))
-	}
-	return nil
 }
 
 func (s *Service) Status() Status {

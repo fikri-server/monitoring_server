@@ -255,33 +255,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    const notifyBtn = document.getElementById('notify-test');
-    if (notifyBtn) {
-        notifyBtn.addEventListener('click', async () => {
-            const resultEl = document.getElementById('notify-result');
-            notifyBtn.disabled = true;
-            if (resultEl) {
-                resultEl.textContent = 'mengirim...';
-                resultEl.style.color = 'var(--text-dim)';
-            }
-            try {
-                const response = await fetch('/api/notify/test', { method: 'POST' });
-                const data = await response.json();
-                if (resultEl) {
-                    resultEl.textContent = response.ok ? 'terkirim' : (data.error || 'gagal');
-                    resultEl.style.color = response.ok ? 'var(--accent3)' : 'var(--warn)';
-                }
-            } catch (err) {
-                if (resultEl) {
-                    resultEl.textContent = 'gagal menghubungi server';
-                    resultEl.style.color = 'var(--warn)';
-                }
-            } finally {
-                notifyBtn.disabled = false;
-            }
-        });
-    }
-
     fetchMonitorData();
     setInterval(fetchMonitorData, 2000);
     fetchNotifyStatus();

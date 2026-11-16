@@ -478,30 +478,6 @@ body::after {
 .info-key { color: var(--text-dim); }
 .info-val { color: var(--text); font-weight: 700; }
 
-.notify-btn {
-    margin-top: 14px;
-    width: 100%;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    color: var(--text-dim);
-    font-family: 'Space Mono', monospace;
-    font-size: 11px;
-    padding: 8px 12px;
-    cursor: pointer;
-    transition: border-color 0.2s, color 0.2s;
-}
-
-.notify-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--text); }
-.notify-btn:disabled { opacity: 0.5; cursor: wait; }
-
-.notify-result {
-    margin-top: 8px;
-    min-height: 12px;
-    font-size: 10px;
-    color: var(--text-dim);
-}
-
 .uptime-display {
     font-family: "Datatype", monospace;
     font-optical-sizing: auto;
