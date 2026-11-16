@@ -122,3 +122,33 @@ func TestSanitizeRemovesSecrets(t *testing.T) {
 		t.Fatalf("expected redaction marker: %q", got)
 	}
 }
+
+func TestSendTestEmailNotConfigured(t *testing.T) {
+	s := NewService(Config{}, countingSender(new(int), nil))
+	if err := s.SendTestEmail(); err == nil {
+		t.Fatal("expected error when not configured")
+	}
+}
+
+func TestSendTestEmailSendsOnce(t *testing.T) {
+	calls := 0
+	var sent []byte
+	send := func(user, password, to string, msg []byte) error {
+		calls++
+		sent = msg
+		return nil
+	}
+	s := NewService(testConfig(), send)
+	if err := s.SendTestEmail(); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if calls != 1 {
+		t.Fatalf("expected 1 test email, got %d", calls)
+	}
+	if !strings.Contains(string(sent), "Test email") {
+		t.Fatalf("expected test marker in message:\n%s", sent)
+	}
+	if strings.Contains(string(sent), "secretpass") {
+		t.Fatal("password must not be in the test email")
+	}
+}
