@@ -13,7 +13,10 @@ import (
 	"monitoring_server/internal/gpu"
 	"monitoring_server/internal/memory"
 	"monitoring_server/internal/network"
+	"monitoring_server/internal/notify"
 	"monitoring_server/internal/sysinfo"
+
+	"github.com/joho/godotenv"
 )
 
 type SystemInfo struct {
@@ -37,6 +40,9 @@ type SystemInfo struct {
 var systemInfo SystemInfo
 
 func main() {
+	// .env bersifat opsional: env dari systemd tetap dipakai.
+	_ = godotenv.Load()
+
 	// Inisialisasi services
 	cpuService := cpu.NewService()
 	memService := memory.NewService()
@@ -45,6 +51,7 @@ func main() {
 	netService := network.NewService()
 	sysService := sysinfo.NewService()
 	batteryService := battery.NewService()
+	notifyService := notify.NewService(notify.ConfigFromEnv(), notify.SMTPSend)
 
 	// Inisialisasi handlers
 	cpuHandler := cpu.NewHandler(cpuService)
@@ -54,9 +61,10 @@ func main() {
 	netHandler := network.NewHandler(netService)
 	sysHandler := sysinfo.NewHandler(sysService)
 	batteryHandler := battery.NewHandler(batteryService)
+	notifyHandler := notify.NewHandler(notifyService)
 
 	// Background updater
-	go updateAllData(cpuService, memService, diskService, gpuService, netService, sysService, batteryService)
+	go updateAllData(cpuService, memService, diskService, gpuService, netService, sysService, batteryService, notifyService)
 
 	// Routes
 	http.HandleFunc("/", homePage)
@@ -71,6 +79,8 @@ func main() {
 	http.HandleFunc("/api/battery/percentage", batteryHandler.GetBatteryPercentageHandler)
 	http.HandleFunc("/api/battery/status", batteryHandler.GetBatteryStatusHandler)
 	http.HandleFunc("/api/battery/health", batteryHandler.GetBatteryHealthHandler)
+	http.HandleFunc("/api/notify", notifyHandler.GetStatus)
+	http.HandleFunc("/api/notify/test", notifyHandler.SendTest)
 	http.HandleFunc("/health", healthCheck)
 
 	// Static files
@@ -79,7 +89,7 @@ func main() {
 	port := ":8081"
 	log.Printf("🚀 Monitoring Server berjalan di http://localhost%s", port)
 	log.Println("📊 Monitor resource server secara real-time")
-	log.Printf("📍 Endpoints: /, /api/monitor, /api/cpu, /api/memory, /api/disk, /api/network, /api/system, /api/battery*, /health")
+	log.Printf("📍 Endpoints: /, /api/monitor, /api/cpu, /api/memory, /api/disk, /api/network, /api/system, /api/battery*, /api/notify*, /health")
 	log.Fatal(http.ListenAndServe(port, nil))
 }
 
@@ -91,6 +101,7 @@ func updateAllData(
 	netService *network.Service,
 	sysService *sysinfo.Service,
 	batteryService *battery.Service,
+	notifier *notify.Service,
 ) {
 	for {
 		cpuInfo, _ := cpuService.GetCPUInfo()
@@ -100,6 +111,8 @@ func updateAllData(
 		netInfo, _ := netService.GetNetInfo()
 		sysInfo, _ := sysService.GetSystemInfo()
 		batteryInfo, _ := batteryService.GetBatteryInfo() // bisa error, tapi akan tetap zero value
+
+		notifier.Check(batteryInfo, time.Now())
 
 		systemInfo = SystemInfo{
 			Hostname:    sysInfo.Hostname,
