@@ -27,6 +27,16 @@ func buildMessage(from, to, hostname string, info battery.BatteryInfo, now time.
 	return formatEmail(from, to, subject, now, body)
 }
 
+func buildTestMessage(from, to, hostname string, now time.Time) []byte {
+	subject := "[SRVWATCH] Test email notifikasi baterai"
+	body := fmt.Sprintf(
+		"Ini email percobaan dari server %s pada %s.\n\n"+
+			"Kalau email ini diterima, konfigurasi notifikasi baterai sudah benar.\n",
+		hostname, now.Format(time.RFC3339),
+	)
+	return formatEmail(from, to, subject, now, body)
+}
+
 func formatEmail(from, to, subject string, now time.Time, body string) []byte {
 	msg := fmt.Sprintf(
 		"From: %s\r\nTo: %s\r\nSubject: %s\r\nDate: %s\r\nMIME-Version: 1.0\r\nContent-Type: text/plain; charset=UTF-8\r\n\r\n%s",

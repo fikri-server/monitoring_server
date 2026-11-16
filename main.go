@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"html/template"
 	"log"
 	"net/http"
@@ -40,8 +41,20 @@ type SystemInfo struct {
 var systemInfo SystemInfo
 
 func main() {
+	testEmail := flag.Bool("test-email", false, "kirim satu email percobaan lalu keluar")
+	flag.Parse()
+
 	// .env bersifat opsional: env dari systemd tetap dipakai.
 	_ = godotenv.Load()
+
+	if *testEmail {
+		svc := notify.NewService(notify.ConfigFromEnv(), notify.SMTPSend)
+		if err := svc.SendTestEmail(); err != nil {
+			log.Fatalf("❌ gagal mengirim test email: %v", err)
+		}
+		log.Println("✅ test email terkirim")
+		return
+	}
 
 	// Inisialisasi services
 	cpuService := cpu.NewService()

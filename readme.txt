@@ -8,3 +8,4 @@ Email alert saat baterai discharging:
 - NOTIFY_TO = penerima (kosong = SMTP_USER), NOTIFY_THRESHOLD = 20
 - .env tidak di-commit; restart service setelah mengubahnya
 - Status ada di card "Email Alerts" di dashboard (alamat email tidak ditampilkan)
+- Test kirim sekali: ./monitoring_server -test-email (pakai .env, lalu keluar)
